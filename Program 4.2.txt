@@ -1,0 +1,257 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+#include <time.h>
+#include <conio.h>
+
+int main(void)
+{
+    float mainBalance, tempBalance, totalBet, bet, winnings;
+    float betOptionS = 0;
+    float betOptionE = 0;
+    float betOptionO = 0;
+    float betOptionT = 0;
+    float betOptionV = 0;
+    char option;
+    int dice1, dice2, diceTotal;
+    int isPlayingGame = 1;  //TRUE
+    int isPlayingRound = 1; //TRUE
+
+    mainBalance = 200;
+
+    //INITIALIZE RANDOM NUMBER GENERATOR
+    srand(time(NULL));
+
+
+    //GAME PLAY
+    while(isPlayingGame == 1){
+
+        tempBalance = mainBalance;
+        totalBet = 0;
+        winnings = 0;
+
+        //ROUND PLAY
+        do {
+
+            dice1 = rand() % 6 + 1;
+            dice2 = rand() % 6 + 1;
+            diceTotal = dice1 + dice2;
+
+            //MENU
+            printf("\nSam's Dice\t\t\tMain Balance: %.2f\n\n", mainBalance);
+            printf("Menu Option\t  Outcome\n");
+            printf("  S or s\tPair\n");
+            printf("  O or o\tTotal is Odd\n");
+            printf("  E or e\tTotal is Even\n");
+            printf("  T or t\t2 or 12\n");
+            printf("  V or v\tTotal is Seven (7)\n");
+            printf("  B and b\tSet all bets to Zero\n");
+            printf("  R or r\tRoll the Dice\n");
+            printf("  X or x\tExit the Game\n\n");
+            printf("Temp Balance: %.2f\n", tempBalance);
+            printf("Total Bet: %.2f\n", totalBet);
+
+            //MORE THAN $5.00 IN THE BANK
+            if(mainBalance < 5){
+                printf("\nYOUR BALANCE IS LESS THAN $5.00 (TOO LOW)");
+                isPlayingRound = 0; //EXIT ROUND
+                isPlayingGame =0;   //EXIT GAME
+                break;
+            }
+
+            if(totalBet == 0){
+                printf("\nOption: ");
+                scanf(" %c", &option);
+            }else{
+                //DISPLAY CHOSEN OPTIONS FOR THIS ROUND
+                if(betOptionS != 0) printf("\nOption S: Total Bet: %.2f",betOptionS);
+                if(betOptionO != 0) printf("\nOption O: Total Bet: %.2f",betOptionO);
+                if(betOptionE != 0) printf("\nOption E: Total Bet: %.2f",betOptionE);
+                if(betOptionT != 0) printf("\nOption T: Total Bet: %.2f",betOptionT);
+                if(betOptionV != 0) printf("\nOption V: Total Bet: %.2f",betOptionV);
+
+                printf("\n\nOption: ");
+                scanf(" %c", &option);
+            }
+
+            switch(option){
+
+            //USER RESETS ALL BETS
+            case 'b':
+            case 'B':
+                printf("\nALL BETS RESET\n");
+
+                //RESET TEMP BALANCE TO MAIN BALANCE
+                tempBalance = mainBalance;
+
+                //CLEAR ALL OPTION BETS
+                betOptionS = 0;
+                betOptionO = 0;
+                betOptionE = 0;
+                betOptionT = 0;
+                betOptionV = 0;
+
+                //RESET TOTAL BET
+                totalBet = 0;
+
+                //RESET OPTION
+                option = ' ';
+                continue;
+
+            //USER ROLLS
+            case 'r':
+            case 'R':
+
+                //CHECK IF MINIMUM BET IS $5.00
+                if(totalBet < 5){
+                    printf("\nMinimum Bet is $5.00\n");
+                    option = ' ';
+                    bet = 0;
+                    continue;
+                }
+
+                //DISPLAY DICE ROLL AND TOTAL
+                printf("********************");
+                printf("\nDice 1: %d", dice1);
+                printf("\nDice 2: %d", dice2);
+                printf("\nTotal: %d\n",diceTotal);
+                printf("********************");
+
+                //PAIRS
+                if(dice1 == dice2){
+                    mainBalance += betOptionS * 4; //ADD TO MAIN BALANCE
+                    winnings += betOptionS * 4;    //ADD TO TEMP WINNINGS BALANCE
+                    totalBet -= betOptionS;        //SUBTRACT FROM TEMP ROUND BALANCE
+                    printf("\nOption: S = Award: %.2f", (betOptionS*4));
+                }else{
+                    printf("\nOption: S = Loss: %.2f", betOptionS);
+                    }
+
+                //ODD
+                if((diceTotal % 2) != 0){
+                    mainBalance += betOptionO * 1.5;
+                    winnings += betOptionO * 1.5;
+                    totalBet -= betOptionO;
+                    printf("\nOption: O = Award: %.2f", betOptionO*1.5);
+                }else{
+                    printf("\nOption: O = Loss: %.2f", betOptionO);
+                }
+
+                //EVEN
+                if((diceTotal % 2) == 0){
+                    mainBalance += betOptionE * 0.75;
+                    winnings += betOptionE * 0.75;
+                    totalBet -= betOptionE;
+                    printf("\nOption: E = Award: %.2f", betOptionE*0.75);
+                }else{
+                    printf("\nOption: E = Loss: %.2f", betOptionE);
+                }
+
+                //2 OR 12
+                if(diceTotal == 2 || diceTotal == 12){
+                    mainBalance += betOptionT * 7;
+                    winnings =+ betOptionT * 7;
+                    totalBet -= betOptionT;
+                    printf("\nOption: T = Award: %.2f", betOptionT*7);
+                }else{
+                    printf("\nOption: T = Loss: %.2f", betOptionT);
+                }
+
+                //TOTAL IS 7
+                if(diceTotal == 7){
+                    mainBalance += betOptionV * 4;
+                    winnings += betOptionV *4;
+                    totalBet -= betOptionV;
+                    printf("\nOption: V = Award: %.2f",betOptionV*4);
+                }else{
+                    printf("\nOption: V = Loss: %.2f", betOptionV);
+                }
+
+                printf("\n********************");
+                printf("\nTotal Winnings: %.2f", winnings - totalBet);
+                printf("\n********************\n");
+
+                //CLEAR ALL OPTION BETS
+                betOptionS = 0;
+                betOptionO = 0;
+                betOptionE = 0;
+                betOptionT = 0;
+                betOptionV = 0;
+
+                //AFTER WINNINGS WERE ADDED, SUBTRACT LEFT OVER BETS
+                mainBalance -= totalBet;
+
+                //NEW ROUND
+                isPlayingRound = 0;
+
+                continue;
+
+            //USER EXITS
+            case 'x':
+            case 'X':
+                exit(0);
+                break;
+
+            case 's':
+            case 'S':
+            case 'o':
+            case 'O':
+            case 'e':
+            case 'E':
+            case 't':
+            case 'T':
+            case 'v':
+            case 'V':
+                break;
+            default:
+                printf("\nPLEASE SELECT A VALID OPTION\n");
+                option = ' ';
+                continue;
+            }
+
+            printf("Bet: ");
+            scanf("%f",&bet);
+
+            //CHECKS IF TOTAL BET IS OVER $25.00
+            if((totalBet+bet) > 25){
+                printf("\n\nTOTAL BET IS MORE THAN $25.00\n\n");
+                bet = 0;
+                option = ' ';
+                continue;
+            }
+
+            //CHECKS IF NEGATIVE NUMBER
+            if(bet < 0){
+                printf("\nCANNOT BE A NEGATIVE NUMBER\n");
+                bet = 0;
+                option = ' ';
+                continue;
+            }
+
+            //UPDATE TEMPORARY BALANCE - CHECK IF 'BREAKS THE BANK'
+            if((tempBalance - bet) < 0){
+                printf("\nBET WILL BRING YOUR BALANCE BELOW ZERO\n");
+                bet = 0;
+                option = ' ';
+                continue;
+            }else{
+                tempBalance -= bet;
+            }
+
+            //ASSIGN BET TO OPTION
+            if(option == 's' || option == 'S') betOptionS += bet;
+            if(option == 'o' || option == 'O') betOptionO += bet;
+            if(option == 'e' || option == 'E') betOptionE += bet;
+            if(option == 't' || option == 'T') betOptionT += bet;
+            if(option == 'v' || option == 'V') betOptionV += bet;
+
+            //ADD TEMP BET TO OVERALL BET FOR THIS ROUND
+            totalBet += bet;
+
+            isPlayingRound = 1;
+
+        }while (isPlayingRound == 1);
+    }
+
+    return 0;
+}
