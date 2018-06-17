@@ -38,7 +38,7 @@ int main(void)
             diceTotal = dice1 + dice2;
 
             //MENU
-            printf("\nSam's Dice\t\t\tMain Balance: %.2f\n\n", mainBalance);
+            printf("\nJim's Dice\t\t\tMain Balance: %.2f\n\n", mainBalance);
             printf("Menu Option\t  Outcome\n");
             printf("  S or s\tPair\n");
             printf("  O or o\tTotal is Odd\n");
